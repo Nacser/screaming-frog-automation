@@ -1,0 +1,1 @@
+# screaming-frog-automation
