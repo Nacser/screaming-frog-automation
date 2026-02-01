@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Screaming Frog Automation</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <h1 class="app-title">Screaming Frog Automation</h1>
+        <p class="app-subtitle">Automatiza tus rastreos y análisis SEO</p>
+    </header>
+
+    <!-- TABS -->
+    <nav class="tabs">
+        <button class="tab-btn active" data-tab="crawl">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16"/></svg>
+            Rastreo
+        </button>
+        <button class="tab-btn" data-tab="scheduled">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Programados
+        </button>
+        <button class="tab-btn" data-tab="settings">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4m8.66-18.66l-2.83 2.83m-11.66 11.66l-2.83 2.83m22.32 0l-2.83-2.83m-11.66-11.66l-2.83-2.83"/></svg>
+            Configuración
+        </button>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <main class="main">
+
+        <!-- ======================== TAB: CRAWL ======================== -->
+        <section id="tab-crawl" class="tab active">
+            <div class="crawl-layout">
+
+                <!-- FILA SUPERIOR: Configuración básica -->
+                <div class="crawl-top">
+                    <div class="card">
+                        <h2 class="card-title">Configurar Rastreo</h2>
+
+                        <div class="crawl-basic-grid">
+                            <!-- Modo -->
+                            <div class="field">
+                                <label class="field-label">Modo</label>
+                                <div class="mode-btns">
+                                    <button class="mode-btn active" id="btn-mode-url">
+                                        <strong>Nueva URL</strong>
+                                        <span>Rastrear un nuevo sitio</span>
+                                    </button>
+                                    <button class="mode-btn" id="btn-mode-file">
+                                        <strong>Archivo Existente</strong>
+                                        <span>Procesar rastreo previo</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- URL / Archivo -->
+                            <div class="field">
+                                <div id="group-url">
+                                    <label class="field-label">URL a Rastrear</label>
+                                    <input type="text" id="input-url" class="input" placeholder="https://ejemplo.com">
+                                </div>
+                                <div id="group-file" class="hidden">
+                                    <label class="field-label">Archivo de Rastreo (.seospider)</label>
+                                    <button class="file-btn" id="btn-select-crawl-file">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        <span id="txt-crawl-file">Seleccionar archivo...</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Configuración SF -->
+                            <div class="field">
+                                <label class="field-label">Archivo de Configuración SF (Opcional)</label>
+                                <button class="file-btn" id="btn-select-config">
+                                    <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                                    <span id="txt-config-file">Seleccionar configuración...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILA MEDIA: Exportaciones + Procesados -->
+                <div class="crawl-middle">
+                    <!-- Exportaciones -->
+                    <div class="card crawl-exports-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Archivos a Exportar
+                        </h3>
+                        <div class="export-actions">
+                            <button type="button" class="export-action-btn" onclick="selectAllExports()">
+                                <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                                Todos
+                            </button>
+                            <button type="button" class="export-action-btn" onclick="deselectAllExports()">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                                Ninguno
+                            </button>
+                            <button type="button" class="export-action-btn primary" onclick="selectPrimaryExports()">
+                                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                Principales
+                            </button>
+                        </div>
+
+                        <div class="export-section">
+                            <div class="export-section-header">Export Tabs</div>
+                            <div id="export-tabs-container"></div>
+                        </div>
+
+                        <div class="export-section">
+                            <div class="export-section-header">Bulk Exports</div>
+                            <div id="bulk-exports-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Procesados + Programación -->
+                    <div class="crawl-options-col">
+                        <div class="card">
+                            <h3 class="card-title">
+                                <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                Procesados
+                            </h3>
+                            <label class="chk"><input type="checkbox" id="chk-analysis" checked><span>Análisis de URLs Internas + PDF resumen</span></label>
+                            <label class="chk"><input type="checkbox" id="chk-comparison"><span>Comparar con rastreo anterior</span></label>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="card-title">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                Programación
+                            </h3>
+                            <label class="chk">
+                                <input type="checkbox" id="chk-schedule">
+                                <span>Programar este rastreo</span>
+                            </label>
+                            <div id="schedule-opts" class="schedule-opts hidden">
+                                <div>
+                                    <label class="field-label-sm">Nombre del rastreo</label>
+                                    <input type="text" id="input-sched-name" class="input-sm" placeholder="Ej: Auditoría mensual cliente X">
+                                </div>
+                                <div class="two-inputs">
+                                    <div>
+                                        <label class="field-label-sm">Fecha</label>
+                                        <input type="date" id="input-sched-date" class="input-sm">
+                                    </div>
+                                    <div>
+                                        <label class="field-label-sm">Hora</label>
+                                        <input type="time" id="input-sched-time" class="input-sm">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="field-label-sm">Frecuencia</label>
+                                    <select id="select-sched-freq" class="input-sm">
+                                        <option value="once">Una vez</option>
+                                        <option value="daily">Diario</option>
+                                        <option value="weekly">Semanal</option>
+                                        <option value="monthly">Mensual</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILA INFERIOR: Botón + Estado/Resultados -->
+                <div class="crawl-bottom">
+                    <!-- Botón principal -->
+                    <div class="crawl-action">
+                        <button class="btn-primary" id="btn-start">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16"/></svg>
+                            <span id="txt-start-btn">Iniciar Rastreo</span>
+                        </button>
+                    </div>
+
+                    <!-- Estado/Resultados/Info -->
+                    <div class="crawl-status">
+                        <!-- Procesando -->
+                        <div class="card hidden" id="card-processing">
+                            <h3 class="card-title"><span class="spinner"></span> Procesando</h3>
+                            <div class="phase-box">
+                                <p id="txt-phase">Iniciando...</p>
+                            </div>
+                        </div>
+
+                        <!-- Resultados -->
+                        <div class="card hidden" id="card-results">
+                            <h3 class="card-title success">
+                                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                Proceso Completado
+                            </h3>
+                            <div id="results-summary" class="results-summary"></div>
+                            <div class="results-files">
+                                <h4>Archivos Generados</h4>
+                                <div id="results-files-list"></div>
+                            </div>
+                            <button class="btn-secondary" id="btn-open-folder">
+                                <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                                Abrir Carpeta
+                            </button>
+                            <div id="pdf-buttons-container"></div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="card" id="card-info">
+                            <h3 class="card-title">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                Información
+                            </h3>
+                            <ul class="info-list">
+                                <li>Configura las opciones de rastreo en los paneles superiores.</li>
+                                <li>Puedes programar el rastreo para ejecución automática.</li>
+                                <li>El análisis de internos genera un Excel por tipos y un PDF resumen.</li>
+                                <li>La comparación detecta cambios respecto al rastreo anterior.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== TAB: SCHEDULED ======================== -->
+        <section id="tab-scheduled" class="tab">
+            <div class="scheduled-wrap">
+                <div class="card">
+                    <h2 class="card-title">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Rastreos Programados
+                    </h2>
+                    <p class="scheduled-desc">Gestiona tus rastreos programados. Puedes editar el nombre, ver los detalles, cambiar la frecuencia o eliminarlos.</p>
+                    <div id="list-scheduled" class="scheduled-list-full">
+                        <p class="empty-msg">No hay rastreos programados</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== TAB: SETTINGS ======================== -->
+        <section id="tab-settings" class="tab">
+            <div class="settings-wrap">
+                <div class="card">
+                    <h2 class="card-title">Configuración de Rutas</h2>
+
+                    <div class="field">
+                        <label class="field-label">Ruta del ejecutable de Screaming Frog CLI</label>
+                        <input type="text" id="input-path-sf" class="input" placeholder="C:\Program Files\Screaming Frog SEO Spider\...">
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Carpeta de Salida (resultados)</label>
+                        <input type="text" id="input-path-output" class="input">
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Carpeta de Configuraciones (.seospiderconfig)</label>
+                        <input type="text" id="input-path-config" class="input">
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Carpeta Temporal</label>
+                        <input type="text" id="input-path-temp" class="input">
+                    </div>
+
+                    <button class="btn-primary" id="btn-save-config">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Guardar Configuración
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- NOTIFICACIÓN (toast) -->
+    <div class="toast hidden" id="toast">
+        <span id="toast-msg"></span>
+    </div>
+
+    <!-- MODAL: Detalles del rastreo -->
+    <div class="modal-overlay hidden" id="modal-details">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Detalles del Rastreo</h3>
+                <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            <div id="modal-details-content"></div>
+        </div>
+    </div>
+
+</div>
+<!--
+  El script del renderer se carga con ruta absoluta para evitar
+  problemas de resolución relativa en Electron.
+  Este bloque se ejecuta en el contexto de Node (nodeIntegration: true).
+-->
+<script>
+  // Calculamos la ruta absoluta desde la ubicación de este HTML (ui/index.html)
+  const path = require('path');
+  const appJsPath = path.resolve(__dirname, '..', 'src', 'renderer', 'app.js');
+  require(appJsPath);
+</script>
+</body>
+</html>

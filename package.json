@@ -1,0 +1,36 @@
+{
+  "name": "screaming-frog-automation",
+  "version": "2.1.0",
+  "description": "Automatización profesional de rastreos con Screaming Frog SEO Spider",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "pdfkit": "^0.14.0",
+    "node-schedule": "^2.1.1"
+  },
+  "build": {
+    "appId": "com.sfautomation.app",
+    "productName": "Screaming Frog Automation",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "src/**/*",
+      "ui/**/*"
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "assets/icon.ico"
+    }
+  }
+}
